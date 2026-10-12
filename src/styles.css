@@ -211,8 +211,6 @@ h1,h2 { font-family: var(--font-display); font-weight: 400; }
 .hero p { font-size: 14px; line-height: 1.8; margin-top: 20px; }
 .hero-cta { height: 45px; padding: 0 25px; font-size: 12px; margin-top: 25px; box-shadow: none; gap: 25px; }
 .hero-note { display: flex; align-items: center; gap: 7px; font-size: 10px; margin-top: 22px; }
-.hero-stamp { position: absolute; right: 5%; bottom: 32px; border: 1px solid var(--foreground); border-radius: 50%; width: 94px; height: 94px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--butter); transform: rotate(9deg); gap: 3px; }
-.hero-stamp span { font-family: var(--font-display); font-size: 17px; text-align: center; line-height: 1.1; }
 .section-width { max-width: 1360px; width: 86%; margin-left: auto; margin-right: auto; }
 .section-intro { text-align: center; }
 .section-intro .eyebrow { margin-bottom: 10px; }
