@@ -59,6 +59,7 @@ function Index() {
   function add(id: number) {
     const p = products.find(p => p.id === id); if (!p) return;
     const color = selected[id] || p.colors[0];
+    if (!color) return;
     setCart(old => { const exists = old.some(i => i.id === id && i.color === color); return exists ? old.map(i => i.id === id && i.color === color ? { ...i, quantity: i.quantity + 1 } : i) : [...old, { id, color, quantity: 1 }]; });
     setDetail(null); setCartOpen(true);
   }
