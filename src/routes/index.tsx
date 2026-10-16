@@ -2,8 +2,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowRight, Search, UserRound, ShoppingBag, Menu, X, Plus, Minus, Heart, Flower2, Sparkles, BookOpen, GraduationCap, NotebookPen, ListChecks, CreditCard, Truck, MessageCircle, Instagram, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import hero from "@/assets/campanella-hero.jpg";
-import agendaAzul from "@/assets/campanella-agenda-blue.jpg";
+import hero from "@/assets/campanella-hero-elastico.jpg";
+import coverBlue from "@/assets/campanella-cover-blue.png.asset.json";
+import coverYellow from "@/assets/campanella-cover-yellow.png.asset.json";
+import coverQuadrille from "@/assets/campanella-cover-quadrille.png.asset.json";
+import coverShip from "@/assets/campanella-cover-ship.png.asset.json";
+import coverGinkgo from "@/assets/campanella-cover-ginkgo.png.asset.json";
+import { AgendaImage } from "@/components/agenda-image";
 import planner from "@/assets/planner.jpg";
 import notas from "@/assets/notas.jpg";
 import docente from "@/assets/docente.jpg";
@@ -26,15 +31,20 @@ const categories = [
   { name: "Blocks de notas", color: "bg-rose", icon: NotebookPen },
   { name: "Listas y organización", color: "bg-butter", icon: ListChecks },
 ];
-const products = [
-  { id: 1, name: "Agenda 2027 Vichy", subtitle: "Espiral, tapa dura y estampillas ilustradas.", image: agendaAzul, category: "Agendas y planners", price: 24500, colors: ["Azul"], badge: "La favorita", badgeColor: "bg-butter" },
+type Product = { id: number; name: string; subtitle: string; image: string; category: string; price: number; colors: string[]; badge: string; badgeColor: string; cover?: boolean };
+const products: Product[] = [
+  { id: 1, name: "Agenda 2027 Vichy azul", subtitle: "Cuadros azules, estampillas y cierre elástico.", image: coverBlue.url, cover: true, category: "Agendas y planners", price: 24500, colors: ["Azul"], badge: "Con elástico", badgeColor: "bg-sky" },
+  { id: 7, name: "Agenda 2027 Vichy amarilla", subtitle: "El mismo diseño, en amarillo suave. Con elástico.", image: coverYellow.url, cover: true, category: "Agendas y planners", price: 24500, colors: ["Amarillo"], badge: "Con elástico", badgeColor: "bg-butter" },
+  { id: 8, name: "Agenda 2027 Cuadrillé", subtitle: "Cuadros de colores y pequeños sellos. Con elástico.", image: coverQuadrille.url, cover: true, category: "Agendas y planners", price: 24500, colors: ["Multicolor"], badge: "Con elástico", badgeColor: "bg-rose" },
+  { id: 9, name: "Agenda 2027 Barco", subtitle: "Azul profundo, barco dorado y cierre elástico.", image: coverShip.url, cover: true, category: "Agendas y planners", price: 24500, colors: ["Azul"], badge: "Con elástico", badgeColor: "bg-sky" },
+  { id: 10, name: "Agenda 2027 Ginkgo", subtitle: "Verde con hojas de ginkgo y cierre elástico.", image: coverGinkgo.url, cover: true, category: "Agendas y planners", price: 24500, colors: ["Salvia"], badge: "Con elástico", badgeColor: "bg-sage" },
   { id: 2, name: "Planner Mi semana", subtitle: "Un lugar para cada pendiente.", image: planner, category: "Agendas y planners", price: 12500, colors: ["Lila", "Salvia"], badge: "Sin fechas", badgeColor: "bg-lilac" },
   { id: 3, name: "Block Ideas bonitas", subtitle: "Que ninguna idea se te escape.", image: notas, category: "Blocks de notas", price: 6800, colors: ["Rosa", "Azul", "Salvia"], badge: "", badgeColor: "bg-rose" },
   { id: 4, name: "Planificador Enseñar", subtitle: "Inspirar empieza con un plan.", image: docente, category: "Para enseñar", price: 21900, colors: ["Azul", "Lila"], badge: "Para docentes", badgeColor: "bg-sky" },
   { id: 5, name: "Checklist de estudio", subtitle: "Pequeños pasos, grandes logros.", image: planner, category: "Para estudiar", price: 7500, colors: ["Lila", "Salvia"], badge: "", badgeColor: "bg-lilac" },
   { id: 6, name: "Lista Mis pendientes", subtitle: "Todo en su lugar.", image: notas, category: "Listas y organización", price: 6200, colors: ["Rosa", "Salvia"], badge: "", badgeColor: "bg-rose" },
 ];
-const swatches: Record<string, string> = { Salvia: "bg-sage", Lila: "bg-lilac", Rosa: "bg-rose", Azul: "bg-sky" };
+const swatches: Record<string, string> = { Salvia: "bg-sage", Lila: "bg-lilac", Rosa: "bg-rose", Azul: "bg-sky", Amarillo: "bg-butter", Multicolor: "bg-lilac" };
 const money = (n: number) => "$ " + n.toLocaleString("es-AR");
 type CartItem = { id: number; color: string; quantity: number };
 
@@ -53,7 +63,7 @@ function Index() {
   const [newsletter, setNewsletter] = useState(false);
   const [showAll, setShowAll] = useState(false);
   const count = cart.reduce((sum, p) => sum + p.quantity, 0);
-  const visible = products.filter(p => (filter === "Todos" || p.category === filter) && (p.name + p.subtitle).toLowerCase().includes(query.toLowerCase())).slice(0, showAll || query || filter !== "Todos" ? 6 : 4);
+  const visible = products.filter(p => (filter === "Todos" || p.category === filter) && (p.name + p.subtitle).toLowerCase().includes(query.toLowerCase())).slice(0, showAll || query || filter !== "Todos" ? products.length : 5);
   const activeProduct = products.find(p => p.id === detail);
   function browse(category = "Todos") { setFilter(category); setQuery(""); setShowAll(true); setMobileMenu(false); document.getElementById("productos")?.scrollIntoView({ behavior: "smooth" }); }
   function add(id: number) {
