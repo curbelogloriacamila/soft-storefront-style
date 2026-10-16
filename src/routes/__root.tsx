@@ -78,9 +78,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Avelí · Papelería creativa" },
+      { title: "Campanella · Papelería creativa" },
       { name: "description", content: "Papelería de diseño para tus ideas y tus días." },
-      { property: "og:title", content: "Avelí · Papelería creativa" },
+      { property: "og:title", content: "Campanella · Papelería creativa" },
       { property: "og:description", content: "Papelería de diseño para tus ideas y tus días." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
