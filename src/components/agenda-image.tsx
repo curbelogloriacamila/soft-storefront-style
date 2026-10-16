@@ -1,4 +1,4 @@
-type AgendaImageProps = { image: string; name: string; cover?: boolean };
+type AgendaImageProps = { image: string; name: string; cover?: boolean | undefined };
 
 export function AgendaImage({ image, name, cover = false }: AgendaImageProps) {
   if (!cover) return <img src={image} alt={name} width={1024} height={1024} loading="lazy" />;
