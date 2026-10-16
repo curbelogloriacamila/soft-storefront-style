@@ -2,8 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowRight, Search, UserRound, ShoppingBag, Menu, X, Plus, Minus, Heart, Flower2, Sparkles, BookOpen, GraduationCap, NotebookPen, ListChecks, CreditCard, Truck, MessageCircle, Instagram, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import hero from "@/assets/papeleria-hero.jpg";
-import agenda from "@/assets/agenda.jpg";
+import hero from "@/assets/campanella-hero.jpg";
+import agendaAzul from "@/assets/campanella-agenda-blue.jpg";
 import planner from "@/assets/planner.jpg";
 import notas from "@/assets/notas.jpg";
 import docente from "@/assets/docente.jpg";
@@ -27,7 +27,7 @@ const categories = [
   { name: "Listas y organización", color: "bg-butter", icon: ListChecks },
 ];
 const products = [
-  { id: 1, name: "Agenda Un día a la vez", subtitle: "Tus planes, a tu ritmo.", image: agenda, category: "Agendas y planners", price: 24500, colors: ["Salvia", "Lila", "Rosa"], badge: "La favorita", badgeColor: "bg-butter" },
+  { id: 1, name: "Agenda 2027 Vichy", subtitle: "Espiral, tapa dura y estampillas ilustradas.", image: agendaAzul, category: "Agendas y planners", price: 24500, colors: ["Azul"], badge: "La favorita", badgeColor: "bg-butter" },
   { id: 2, name: "Planner Mi semana", subtitle: "Un lugar para cada pendiente.", image: planner, category: "Agendas y planners", price: 12500, colors: ["Lila", "Salvia"], badge: "Sin fechas", badgeColor: "bg-lilac" },
   { id: 3, name: "Block Ideas bonitas", subtitle: "Que ninguna idea se te escape.", image: notas, category: "Blocks de notas", price: 6800, colors: ["Rosa", "Azul", "Salvia"], badge: "", badgeColor: "bg-rose" },
   { id: 4, name: "Planificador Enseñar", subtitle: "Inspirar empieza con un plan.", image: docente, category: "Para enseñar", price: 21900, colors: ["Azul", "Lila"], badge: "Para docentes", badgeColor: "bg-sky" },
@@ -85,7 +85,7 @@ function Index() {
     {searchOpen && <form className="search-bar" onSubmit={e => { e.preventDefault(); setShowAll(true); document.getElementById("productos")?.scrollIntoView({ behavior: "smooth" }); }}><Search size={18} /><input autoFocus aria-label="Buscar en la tienda" placeholder="¿Qué estás buscando?" value={query} onChange={e => { setQuery(e.target.value); setFilter("Todos"); setShowAll(true); }} /><Button type="submit" variant="ghost">Buscar <ArrowRight /></Button><Button variant="ghost" size="icon" type="button" aria-label="Cerrar búsqueda" onClick={() => { setSearchOpen(false); setQuery(""); }}><X /></Button></form>}
     <main>
       <section className="hero">
-        <img className="hero-image" src={hero} alt="Agendas salvia y azul, planner lila y block rosa sobre un escritorio marfil" width={1920} height={1024} fetchPriority="high" />
+        <img className="hero-image" src={hero} alt="Agenda 2027 de cuadros azules junto a un planner lila y un block rosa" width={1376} height={768} fetchPriority="high" />
         <div className="hero-content"><div className="eyebrow"><span className="tiny-line" /> PAPELERÍA PARA TUS DÍAS</div><h1>Organizá tu día,<br />seguí tus <em>sueños.</em></h1><p>Un espacio para tus ideas, tus planes y todo<br className="desktop-break" /> lo lindo que está por venir.</p><Button size="lg" className="hero-cta" onClick={() => browse()}>Ver productos <ArrowRight size={18} /></Button><div className="hero-note"><Heart size={15} /> Diseñada con amor, para acompañarte.</div></div>
       </section>
       <section className="category-section section-width" aria-labelledby="category-title"><div className="section-intro"><span className="eyebrow">ENCONTRÁ TU PRÓXIMO FAVORITO</span><h2 id="category-title">Un poquito de orden, mucha inspiración.</h2></div><div className="category-grid">{categories.map(c => <Button key={c.name} variant="ghost" className="category-item" onClick={() => browse(c.name)}><span className={`category-art ${c.color}`}><c.icon strokeWidth={1} /><span className="art-star">✧</span></span><span>{c.name}</span><ArrowRight size={15} /></Button>)}</div></section>
