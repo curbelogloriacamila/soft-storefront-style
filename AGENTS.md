@@ -12,3 +12,4 @@
 - Keep the storefront as a frontend-only proposal with in-memory cart and explicitly illustrative prices; commercial services require confirmed business details before activation.
 - Use the root content route for the storefront and dialogs for product details and informational states so the single-page mockup stays navigable without dead links.
 - Keep brand colors and typography in global semantic tokens; product imagery is bundled locally to preserve a cohesive art direction.
+- Render Canva cover assets through the shared AgendaImage presentation in catalog, details and cart; this preserves exact artwork while applying consistent physical binding and elastic closures.
