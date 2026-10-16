@@ -240,7 +240,8 @@ h2 { font-size: 33px; line-height: 1.2; }
 .agenda-elastic { position: absolute; top: -1%; bottom: -2%; right: 9%; width: 3.2%; background: var(--foreground); border-left: 1px solid var(--muted-foreground); border-right: 1px solid var(--muted-foreground); border-radius: 1px; box-shadow: 2px 0 2px var(--overlay); }
 .agenda-binding { position: absolute; top: 3%; bottom: 3%; left: -4%; width: 8%; background: repeating-linear-gradient(to bottom, transparent 0 4%, var(--background) 4% 5%, var(--border) 5% 6%, transparent 6% 8%); }
 .detail-image.agenda-detail { height: 290px; object-fit: contain; }
-.agenda-stage .agenda-book { height: 100%; width: auto; max-width: 100%; }
+.agenda-stage { grid-template-rows: minmax(0, 1fr); grid-template-columns: minmax(0, 1fr); overflow: hidden; }
+.agenda-stage .agenda-book { height: 100%; width: auto; max-width: 100%; max-height: 100%; justify-self: center; }
 .agenda-detail .agenda-stage { padding: 18px 25%; min-height: 0; }
 .cart-row .agenda-stage { width: 76px; height: 95px; padding: 8px 13px; }
 .product-badge { position: absolute; top: 12px; left: 12px; padding: 5px 9px; font-size: 9px; border-radius: 3px; pointer-events: none; }
