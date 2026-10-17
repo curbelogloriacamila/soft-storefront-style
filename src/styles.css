@@ -189,7 +189,7 @@ h1,h2 { font-family: var(--font-display); font-weight: 400; }
 .store { overflow-x: clip; }
 .announcement { background: var(--sage); height: 32px; display: flex; justify-content: center; align-items: center; gap: 18px; font-size: 11px; letter-spacing: 0; }
 .site-header { height: 100px; padding: 0 4.8%; display: grid; grid-template-columns: 320px minmax(0,1fr) auto; align-items: center; gap: 20px; border-bottom: 1px solid var(--border); }
-.wordmark { position: relative; width: fit-content; display: block; font-family: var(--font-brand); font-weight: 600; font-size: 34px; line-height: .95; text-decoration: none; }
+.wordmark { position: relative; width: fit-content; display: block; font-family: var(--font-brand); font-weight: 600; font-size: 34px; line-height: .95; text-decoration: none; text-transform: uppercase; letter-spacing: .5px; }
 .wordmark span { display: block; font-family: var(--font-sans); font-size: 9px; margin-top: 8px; text-align: center; }
 .main-nav { display: flex; align-items: center; justify-content: center; gap: 16px; }
 .main-nav button, .main-nav a { font-size: 12px; padding: 0; color: var(--foreground); font-weight: 600; text-decoration: none; }
