@@ -1,4 +1,7 @@
 # Propuesta de papelería
+- [ ] Implementar carrito persistente, validaciones y totales por variante.
+- [ ] Agregar transferencia, copia de alias y mensajes dinámicos al WhatsApp existente.
+- [ ] Verificar pruebas y flujo de carrito en computadora y celular.
 - [x] Quitar flechas de categorías, «Vichy» y la sección Colecciones con sus enlaces.
 - [x] Renombrar la tienda a Campanella.
 - [x] Incorporar la portada azul de Canva como agenda.

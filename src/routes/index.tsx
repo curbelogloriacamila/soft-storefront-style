@@ -1,7 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowRight, Search, UserRound, ShoppingBag, Menu, X, Plus, Minus, Heart, Flower2, CreditCard, Truck, MessageCircle, Instagram, Check } from "lucide-react";
+import { ArrowRight, Search, UserRound, ShoppingBag, Menu, X, Plus, Heart, Flower2, CreditCard, Truck, MessageCircle, Instagram, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { CartPanel } from "@/components/cart-panel";
+import { useCart } from "@/hooks/use-cart";
+import { cartSummary, money } from "@/lib/cart";
+import { WHATSAPP_URL, WHATSAPP_DISPLAY_NUMBER as WHATSAPP_NUMBER } from "@/lib/store-config";
 import hero from "@/assets/campanella-hero-elastico.jpg";
 import coverBlue from "@/assets/campanella-cover-blue.png.asset.json";
 import coverYellow from "@/assets/campanella-cover-yellow.png.asset.json";
@@ -31,8 +35,6 @@ const categories = [
   { name: "Blocks de notas" },
   { name: "Listas y organización" },
 ];
-const WHATSAPP_URL = `https://wa.me/5491135875068?text=${encodeURIComponent("Hola! Quiero informacion sobre:")}`;
-const WHATSAPP_NUMBER = "11 3587 5068";
 type Product = { id: number; name: string; subtitle: string; image: string; category: string; price: number; colors: string[]; badge: string; badgeColor: string; cover?: boolean };
 const products: Product[] = [
   { id: 1, name: "Agenda 2027 azul", subtitle: "Cuadros azules, estampillas y cierre elástico.", image: coverBlue.url, cover: true, category: "Agendas y planners", price: 24500, colors: ["Azul"], badge: "Con elástico", badgeColor: "bg-sky" },
@@ -47,15 +49,15 @@ const products: Product[] = [
   { id: 6, name: "Lista Mis pendientes", subtitle: "Todo en su lugar.", image: notas, category: "Listas y organización", price: 6200, colors: ["Rosa", "Salvia"], badge: "", badgeColor: "bg-rose" },
 ];
 const swatches: Record<string, string> = { Salvia: "bg-sage", Lila: "bg-lilac", Rosa: "bg-rose", Azul: "bg-sky", Amarillo: "bg-butter", Multicolor: "bg-lilac" };
-const money = (n: number) => "$ " + n.toLocaleString("es-AR");
-type CartItem = { id: number; color: string; quantity: number };
 
 function Index() {
   const [filter, setFilter] = useState("Todos");
   const [query, setQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
-  const [cart, setCart] = useState<CartItem[]>([]);
+  const cartState = useCart(products);
+  const { count, totalCents } = cartSummary(cartState.cart, products);
+  const total = totalCents / 100;
   const [cartOpen, setCartOpen] = useState(false);
   const [selected, setSelected] = useState<Record<number, string>>({});
   const [favorites, setFavorites] = useState<number[]>([]);
@@ -64,7 +66,6 @@ function Index() {
   const [email, setEmail] = useState("");
   const [newsletter, setNewsletter] = useState(false);
   const [showAll, setShowAll] = useState(false);
-  const count = cart.reduce((sum, p) => sum + p.quantity, 0);
   const visible = products.filter(p => (filter === "Todos" || p.category === filter) && (p.name + p.subtitle).toLowerCase().includes(query.toLowerCase())).slice(0, showAll || query || filter !== "Todos" ? products.length : 5);
   const activeProduct = products.find(p => p.id === detail);
   function browse(category = "Todos") { setFilter(category); setQuery(""); setShowAll(true); setMobileMenu(false); document.getElementById("productos")?.scrollIntoView({ behavior: "smooth" }); }
@@ -72,10 +73,9 @@ function Index() {
     const p = products.find(p => p.id === id); if (!p) return;
     const color = selected[id] || p.colors[0];
     if (!color) return;
-    setCart(old => { const exists = old.some(i => i.id === id && i.color === color); return exists ? old.map(i => i.id === id && i.color === color ? { ...i, quantity: i.quantity + 1 } : i) : [...old, { id, color, quantity: 1 }]; });
+    cartState.add(id, color);
     setDetail(null); setCartOpen(true);
   }
-  const total = cart.reduce((sum, item) => sum + (products.find(p => p.id === item.id)?.price || 0) * item.quantity, 0);
   return <div className="store">
     <div className="announcement"><span>Pequeños planes. Grandes posibilidades.</span></div>
     <header className="site-header">
@@ -110,8 +110,9 @@ function Index() {
     </main>
     <footer className="footer section-width"><div className="footer-brand"><a href="#" className="wordmark">Campanella<span>papelería creativa</span></a><p>Para tus ideas.<br />Para tus días. Para vos.</p></div><div><h4>Explorá</h4><Button variant="link" onClick={() => browse()}>Todos los productos</Button><Button variant="link" onClick={() => setInfo("Sobre Campanella")}>Sobre Campanella</Button></div><div><h4>Te acompañamos</h4><a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" aria-label={`Contacto por WhatsApp al ${WHATSAPP_NUMBER}`}>Contacto</a>{["Preguntas frecuentes", "Políticas de compra"].map(t => <Button key={t} variant="link" onClick={() => setInfo(t)}>{t}</Button>)}</div><div><h4>Sigamos cerca</h4><Button variant="link" onClick={() => setInfo("Instagram")}><Instagram size={17} /> Instagram</Button><p>Un lugar para inspirarnos.</p></div><div className="footer-bottom"><span>© 2026 Campanella · Propuesta de marca y tienda.</span><span>Hecho con intención <Heart size={13} /></span></div></footer>
     <a className="whatsapp-float" href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" aria-label={`Escribinos por WhatsApp al ${WHATSAPP_NUMBER}`}><MessageCircle aria-hidden="true" /><span>WhatsApp · {WHATSAPP_NUMBER}</span></a>
-    {(cartOpen || info || activeProduct) && <div className="modal-backdrop" onClick={() => { setCartOpen(false); setInfo(null); setDetail(null); }}><section role="dialog" aria-modal="true" aria-label={cartOpen ? "Tu carrito" : info || activeProduct?.name} className={cartOpen ? "cart-panel" : "info-modal"} onClick={e => e.stopPropagation()}><Button variant="ghost" size="icon" className="modal-close" aria-label="Cerrar" onClick={() => { setCartOpen(false); setInfo(null); setDetail(null); }}><X /></Button>
-      {cartOpen ? <><span className="eyebrow">TUS PRÓXIMOS FAVORITOS</span><h2>Tu carrito <span className="cart-title-count">({count})</span></h2>{!cart.length ? <div className="empty-cart"><ShoppingBag size={42} strokeWidth={1} /><p>Todavía hay espacio para ideas bonitas.</p><Button onClick={() => { setCartOpen(false); browse(); }}>Ver productos <ArrowRight /></Button></div> : <><div className="cart-items">{cart.map(item => { const p = products.find(p => p.id === item.id); if (!p) return null; return <div className="cart-row" key={item.id + item.color}><AgendaImage image={p.image} name={p.name} cover={p.cover} /><div><h3>{p.name}</h3><p>{item.color} · {money(p.price)}</p><div className="quantity"><Button variant="ghost" size="icon" aria-label={`Reducir ${p.name}`} onClick={() => setCart(old => old.map(i => i === item ? { ...i, quantity: i.quantity - 1 } : i).filter(i => i.quantity > 0))}><Minus /></Button><span>{item.quantity}</span><Button variant="ghost" size="icon" aria-label={`Aumentar ${p.name}`} onClick={() => setCart(old => old.map(i => i === item ? { ...i, quantity: i.quantity + 1 } : i))}><Plus /></Button></div></div><Button variant="ghost" size="icon" aria-label={`Eliminar ${p.name}`} onClick={() => setCart(old => old.filter(i => i !== item))}><X /></Button></div>; })}</div><div className="cart-total"><span>Subtotal</span><strong>{money(total)}</strong></div><p className="demo-note">Precios ilustrativos. Esta propuesta no procesa pagos ni pedidos.</p><Button className="w-full" onClick={() => { setCartOpen(false); setInfo("Tu selección"); }}>Revisar mi selección <ArrowRight /></Button></>}</> : activeProduct ? <><div className={`detail-image ${activeProduct.cover ? "agenda-detail" : ""}`}><AgendaImage image={activeProduct.image} name={activeProduct.name} cover={activeProduct.cover} /></div><span className="eyebrow">{activeProduct.category}</span><h2>{activeProduct.name}</h2><p>{activeProduct.subtitle}</p><p className="detail-price">{money(activeProduct.price)}</p><p>Color: {selected[activeProduct.id] || activeProduct.colors[0]}</p><div className="swatches detail-swatches">{activeProduct.colors.map(c => <Button key={c} variant="ghost" size="icon" className={`swatch ${swatches[c]} ${(selected[activeProduct.id] || activeProduct.colors[0]) === c ? "swatch-selected" : ""}`} aria-label={`Seleccionar ${c}`} onClick={() => setSelected(old => ({ ...old, [activeProduct.id]: c }))} />)}</div><Button className="w-full" onClick={() => add(activeProduct.id)}>Agregar al carrito <Plus /></Button><p className="demo-note">Fotografía y precio de muestra. Las variantes son una propuesta visual.</p></> : <><Flower2 strokeWidth={1} className="info-flower" /><h2>{info}</h2>{info === "Sobre Campanella" ? <p>Campanella es una propuesta de papelería creativa: un universo de colores suaves y pequeños detalles para darle un lugar a tus ideas.</p> : info === "Tu selección" ? <><p>Tu selección reúne {count} {count === 1 ? "producto" : "productos"}, con un subtotal ilustrativo de {money(total)}.</p><p>Esta tienda es una propuesta visual. Los pedidos y pagos todavía no están habilitados.</p></> : info === "Preguntas frecuentes" ? <><h3>¿Puedo comprar en esta tienda?</h3><p>Por ahora es una propuesta de marca y catálogo; no se realizan ventas.</p><h3>¿Cómo consulto por envíos o pagos?</h3><p>La marca todavía debe confirmar sus canales de contacto y condiciones comerciales.</p></> : <p>{info === "Mi cuenta" ? "Las cuentas de clientes estarán disponibles cuando se habilite la tienda comercial." : info === "Instagram" ? "El perfil oficial de la marca todavía no fue definido." : info === "Contacto" ? "El canal de contacto de la marca todavía no fue definido." : info === "Políticas de compra" ? "Las políticas de compra, cambios y devoluciones deben ser confirmadas por la marca antes de iniciar las ventas." : `La información sobre ${info?.toLowerCase()} será confirmada por la marca antes de habilitar las compras.`}</p>}</>}
+    <CartPanel open={cartOpen} onOpenChange={setCartOpen} cartState={cartState} catalog={products} onBrowse={() => browse()} />
+    {(info || activeProduct) && <div className="modal-backdrop" onClick={() => { setCartOpen(false); setInfo(null); setDetail(null); }}><section role="dialog" aria-modal="true" aria-label={info || activeProduct?.name} className="info-modal" onClick={e => e.stopPropagation()}><Button variant="ghost" size="icon" className="modal-close" aria-label="Cerrar" onClick={() => { setCartOpen(false); setInfo(null); setDetail(null); }}><X /></Button>
+      {activeProduct ? <><div className={`detail-image ${activeProduct.cover ? "agenda-detail" : ""}`}><AgendaImage image={activeProduct.image} name={activeProduct.name} cover={activeProduct.cover} /></div><span className="eyebrow">{activeProduct.category}</span><h2>{activeProduct.name}</h2><p>{activeProduct.subtitle}</p><p className="detail-price">{money(activeProduct.price)}</p><p>Color: {selected[activeProduct.id] || activeProduct.colors[0]}</p><div className="swatches detail-swatches">{activeProduct.colors.map(c => <Button key={c} variant="ghost" size="icon" className={`swatch ${swatches[c]} ${(selected[activeProduct.id] || activeProduct.colors[0]) === c ? "swatch-selected" : ""}`} aria-label={`Seleccionar ${c}`} onClick={() => setSelected(old => ({ ...old, [activeProduct.id]: c }))} />)}</div><Button className="w-full" onClick={() => add(activeProduct.id)}>Agregar al carrito <Plus /></Button><p className="demo-note">Fotografía y precio de muestra. Las variantes son una propuesta visual.</p></> : <><Flower2 strokeWidth={1} className="info-flower" /><h2>{info}</h2>{info === "Sobre Campanella" ? <p>Campanella es una propuesta de papelería creativa: un universo de colores suaves y pequeños detalles para darle un lugar a tus ideas.</p> : info === "Tu selección" ? <><p>Tu selección reúne {count} {count === 1 ? "producto" : "productos"}, con un subtotal ilustrativo de {money(total)}.</p><p>Esta tienda es una propuesta visual. Los pedidos y pagos todavía no están habilitados.</p></> : info === "Preguntas frecuentes" ? <><h3>¿Puedo comprar en esta tienda?</h3><p>Por ahora es una propuesta de marca y catálogo; no se realizan ventas.</p><h3>¿Cómo consulto por envíos o pagos?</h3><p>La marca todavía debe confirmar sus canales de contacto y condiciones comerciales.</p></> : <p>{info === "Mi cuenta" ? "Las cuentas de clientes estarán disponibles cuando se habilite la tienda comercial." : info === "Instagram" ? "El perfil oficial de la marca todavía no fue definido." : info === "Contacto" ? "El canal de contacto de la marca todavía no fue definido." : info === "Políticas de compra" ? "Las políticas de compra, cambios y devoluciones deben ser confirmadas por la marca antes de iniciar las ventas." : `La información sobre ${info?.toLowerCase()} será confirmada por la marca antes de habilitar las compras.`}</p>}</>}
     </section></div>}
   </div>;
 }
