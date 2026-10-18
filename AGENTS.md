@@ -9,7 +9,9 @@
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
 
-- Keep the storefront as a frontend-only proposal with in-memory cart and explicitly illustrative prices; commercial services require confirmed business details before activation.
+- Keep the storefront frontend-only with explicitly illustrative catalog prices until the brand confirms them; bank transfers are verified manually and shipping is coordinated through WhatsApp.
+- Keep cart identifiers, variants and quantities in versioned localStorage through the cart hook; validate restored entries and derive all amounts from the current catalog using integer cents to avoid untrusted prices and rounding errors.
+- Share contact configuration between existing contact links and cart messages; opening WhatsApp is only a handoff, so clearing the cart requires explicit customer confirmation that the order was completed, never an inferred payment result.
 - Use the root content route for the storefront and dialogs for product details and informational states so the single-page mockup stays navigable without dead links.
 - Keep brand colors and typography in global semantic tokens; product imagery is bundled locally to preserve a cohesive art direction.
 - Render Canva cover assets through the shared AgendaImage presentation in catalog, details and cart; this preserves exact artwork while applying consistent physical binding and elastic closures.
