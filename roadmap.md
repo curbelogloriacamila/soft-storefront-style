@@ -1,4 +1,5 @@
 # Propuesta de papelería
+- [x] Quitar flechas de categorías, «Vichy» y la sección Colecciones con sus enlaces.
 - [x] Renombrar la tienda a Campanella.
 - [x] Incorporar la portada azul de Canva como agenda.
 - [x] Sumar las portadas amarilla, cuadrillé, azul con barco y verde con ginkgo de Canva.
